@@ -3,14 +3,14 @@ const status = require('./../utils/status');
 
 
 function startRace(message, args) {
-    const trackLength = 50;
-    const initialHorseDistance = 100;
+    const trackLength = 44;
+    const initialHorseDistance = 80;
     const numberOfHorses = 6;
     const horseNames = ["Velvet Thunder", "Wet blanket", "Side liner", "Tronald Dump", "Hentai Thunderstorm", "SIXTY NINE"];
 
-    status.racing.initalise(horseNames);
+    status.racing.initialise(horseNames);
 
-    message.channel.send("Our participants are:\n" + horseNames.map((horseName, i) => {return `${i + 1}: ${horseName}`}).join('\n') );
+    message.channel.send("Our participants are:\n" + horseNames.map((horseName, i) => { return `${ i + 1 }: ${ horseName }` }).join('\n'));
 
     let horseDistances = Array(numberOfHorses).fill(initialHorseDistance);
     raceTrack = renderRaceTrack(horseDistances, trackLength, initialHorseDistance);
@@ -21,22 +21,23 @@ function startRace(message, args) {
         async message => {
             // const emoji = message.guild.emojis.find('name', 'one');
             await message.react(bettingReactions[1]);
-            await message.react(bettingReactions[2]);
-            await message.react(bettingReactions[3]);
-            await message.react(bettingReactions[4]);
-            await message.react(bettingReactions[5]);
-            await message.react(bettingReactions[6]);
+            // await message.react(bettingReactions[2]);
+            // await message.react(bettingReactions[3]);
+            // await message.react(bettingReactions[4]);
+            // await message.react(bettingReactions[5]);
+            // await message.react(bettingReactions[6]);
 
             // bettingReactions.forEach(async reaction => {await message.react(reaction)} );
         }
     ).then(() => {
         const filter = (receivedReaction) => bettingReactions.includes(receivedReaction);
-        message.awaitReactions(filter, { time: 15000 })
+        message.awaitReactions(filter, { time: 1000 })
             .then(collected => {
                 console.log(collected[0]);
             })
-            .then(()=> {
+            .then(() => {
                 message.channel.send("Bets received, starting race.");
+
                 message.channel.send(raceTrack).then(message => { createNextFrame(message, horseDistances, trackLength, initialHorseDistance, 0) });
             })
     });
@@ -45,12 +46,12 @@ function startRace(message, args) {
 function createNextFrame(message, horseDistances, trackLength, initialHorseDistance, n) {
     let winners = [];
     horseDistances.forEach((length, horse_index) => {
-        length = length - Math.floor(Math.random() * 3 + 1);
+        length = length - Math.floor(Math.random() * 5 + 1);
         horseDistances[horse_index] = length;
         if (length <= 0) winners.push(horse_index);
     });
-    console.log(n);
-    console.log(horseDistances);
+    // console.log(n);
+    // console.log(horseDistances);
     if (winners.length > 0) {
         message.edit(renderRaceTrack(horseDistances, trackLength, initialHorseDistance));
         return declareWinner(message, winners);
@@ -65,10 +66,12 @@ function createNextFrame(message, horseDistances, trackLength, initialHorseDista
 
 function declareWinner(message, winners) {
     console.log("Winner declared!")
+    const horseNames = ["Velvet Thunder", "Wet blanket", "Side liner", "Tronald Dump", "Hentai Thunderstorm", "SIXTY NINE"];
     if (winners.length === 1)
-        message.channel.send(`Horse ${winners[0]+1}: ${winners[0]} has WON!`);
+        message.channel.send(`Horse ${ horseNames[winners[0]] } has WON!`);
     else
-        message.channel.send(`There has been a draw between horses ${winners}`);
+
+        message.channel.send(`There has been a draw between horses ${ winners }`);
 }
 
 function renderRaceTrack(horseDistances, trackLength, initialHorseDistance) {

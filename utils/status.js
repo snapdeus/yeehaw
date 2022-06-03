@@ -10,12 +10,12 @@ let status = {
 // }
 
 module.exports.betting = {
-    isOn : (mode) => {status.betting = mode},
-    checkOn : () => status.betting,
-    addBet : (userID, amt, horseNumber) => {status.race.bets.push([userID, amt, horseNumber])}
+    isOn: (mode) => { status.betting = mode },
+    checkOn: () => status.betting,
+    addBet: (userID, amt, horseNumber) => { status.race.bets.push([userID, amt, horseNumber]) }
 }
 
 module.exports.racing = {
-    initalise: horses=>{status.race.horses = horses},
-    setWinners: winners=>{status.reace.winner = winner}
+    initialise: horses => { status.race.horses = horses },
+    setWinners: winners => { status.reace.winner = winner }
 }
